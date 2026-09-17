@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec.bak
+startreminder_calendar.json
+startreminder_messages.json
+startreminder_settings.json
+*.corrupt-*
+workday_tracker.log
+.pytest_cache/

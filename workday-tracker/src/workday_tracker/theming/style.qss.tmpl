@@ -1,0 +1,197 @@
+/* WorkDay Tracker QSS template. Placeholders are substituted by theme_manager.py */
+
+QWidget {
+    background-color: ${window_bg};
+    color: ${text};
+    font-size: 13px;
+}
+
+QMainWindow, QDialog {
+    background-color: ${window_bg};
+}
+
+#surfacePanel, QGroupBox {
+    background-color: ${surface_bg};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QGroupBox {
+    margin-top: 14px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 8px;
+    padding: 0 4px;
+}
+
+QLabel {
+    background: transparent;
+}
+
+QLabel[muted="true"] {
+    color: ${text_muted};
+}
+
+QPushButton {
+    background-color: ${button_bg};
+    color: ${button_text};
+    border: 1px solid ${border};
+    border-radius: 5px;
+    padding: 6px 14px;
+}
+
+QPushButton:hover {
+    background-color: ${button_hover_bg};
+}
+
+QPushButton:pressed {
+    background-color: ${button_pressed_bg};
+}
+
+QPushButton:disabled {
+    color: ${text_muted};
+}
+
+QPushButton#accentButton {
+    background-color: ${accent};
+    color: ${accent_text};
+    border: 1px solid ${accent};
+    font-weight: bold;
+}
+
+QPushButton#accentButton:hover {
+    background-color: ${accent};
+}
+
+QPushButton#monthJumpButton {
+    background-color: transparent;
+    color: ${text};
+    border: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+QPushButton#monthJumpButton:hover {
+    background-color: ${button_hover_bg};
+    color: ${accent};
+}
+
+QPushButton#monthJumpButton:pressed {
+    background-color: ${button_pressed_bg};
+}
+
+QPushButton#dangerButton {
+    background-color: ${surface_bg};
+    color: ${danger};
+    border: 1px solid ${danger};
+}
+
+QPushButton#dangerButton:hover {
+    background-color: ${danger};
+    color: ${accent_text};
+}
+
+QLineEdit, QTextEdit, QPlainTextEdit, QTextBrowser, QComboBox, QDateEdit, QSpinBox {
+    background-color: ${base_bg};
+    color: ${text};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 6px;
+    selection-background-color: ${selection_bg};
+    selection-color: ${selection_text};
+}
+
+QComboBox QAbstractItemView {
+    background-color: ${base_bg};
+    color: ${text};
+    selection-background-color: ${selection_bg};
+    selection-color: ${selection_text};
+    border: 1px solid ${border};
+}
+
+QListWidget {
+    background-color: ${base_bg};
+    color: ${text};
+    border: 1px solid ${border};
+    border-radius: 4px;
+}
+
+QListWidget::item {
+    padding: 6px;
+}
+
+QListWidget::item:selected {
+    background-color: ${selection_bg};
+    color: ${selection_text};
+}
+
+QScrollBar:vertical {
+    background: ${surface_bg};
+    width: 12px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: ${border};
+    min-height: 24px;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid ${border};
+    background-color: ${base_bg};
+}
+
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+    background-color: ${accent};
+    border: 1px solid ${accent};
+}
+
+QMenu {
+    background-color: ${surface_bg};
+    color: ${text};
+    border: 1px solid ${border};
+}
+
+QMenu::item:selected {
+    background-color: ${selection_bg};
+    color: ${selection_text};
+}
+
+QToolTip {
+    background-color: ${surface_bg};
+    color: ${text};
+    border: 1px solid ${border};
+    padding: 4px;
+}
+
+#calendarDayCell {
+    background-color: transparent;
+    border: none;
+}
+
+QLabel#dayNumberLabel {
+    color: ${text};
+    font-weight: bold;
+    background: transparent;
+}
+
+QLabel#dayNumberLabel[weekend="true"] {
+    color: ${text_muted};
+}
+
+QFrame#separatorLine {
+    background-color: ${border};
+    max-height: 1px;
+    min-height: 1px;
+}
