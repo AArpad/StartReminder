@@ -19,6 +19,8 @@ from PySide6.QtWidgets import (
 )
 
 from ..storage import MessageStore
+from ..theming.icons import make_icon
+from ..theming.palettes import Palette
 
 _DATE_ROLE = Qt.ItemDataRole.UserRole
 _LIST_WIDTH = 130
@@ -72,6 +74,10 @@ class MessageListPanel(QWidget):
         outer_layout.addLayout(action_row)
 
         self._update_action_state()
+
+    def set_palette(self, palette: Palette) -> None:
+        self._edit_button.setIcon(make_icon("edit", palette.button_text))
+        self._delete_button.setIcon(make_icon("delete", palette.danger))
 
     def set_month(self, year: int, month: int) -> None:
         self._year = year

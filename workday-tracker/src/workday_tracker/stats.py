@@ -19,6 +19,10 @@ class MonthlyStats:
     sick_leave: float = 0.0
     public_holiday: float = 0.0
     unrecorded_workdays: float = 0.0
+    # Days that required a commute: a whole day each, even if only the
+    # morning or the afternoon was office - unlike `office`, which counts
+    # half-days as 0.5.
+    travel_days: int = 0
 
 
 _STATUS_FIELD: dict[DayStatus, str] = {
@@ -60,6 +64,8 @@ def compute_monthly_stats(
                     stats.unrecorded_workdays += 0.5
                 continue
             _apply_half(stats, half_status)
+        if DayStatus.OFFICE in (record.am, record.pm):
+            stats.travel_days += 1
 
     return stats
 

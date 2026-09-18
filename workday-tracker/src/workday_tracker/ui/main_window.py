@@ -21,12 +21,16 @@ from PySide6.QtWidgets import (
 from ..settings import SettingsStore
 from ..stats import compute_monthly_stats
 from ..storage import CalendarStore, MessageStore, StorageError
+from ..theming.icons import make_icon
 from ..theming.theme_manager import ThemeManager
 from .calendar_widget import CalendarWidget, DayStatusDialog
+from .info_dialog import InfoDialog
 from .message_editor import MessageEditorDialog
 from .message_list import MessageListPanel
 from .settings_dialog import SettingsDialog
 from .stats_panel import StatsPanel
+
+_ICON_BUTTON_SIZE = 32
 
 logger = logging.getLogger("workday_tracker")
 
@@ -94,13 +98,26 @@ class MainWindow(QMainWindow):
         right_layout.addWidget(self._message_list, 1)
 
         button_row = QHBoxLayout()
-        new_message_button = QPushButton("Új üzenet")
-        new_message_button.setObjectName("accentButton")
-        new_message_button.clicked.connect(self._open_new_message_editor)
-        button_row.addWidget(new_message_button)
-        settings_button = QPushButton("Beállítások")
-        settings_button.clicked.connect(self._open_settings)
-        button_row.addWidget(settings_button)
+        self._new_message_button = QPushButton("Új üzenet")
+        self._new_message_button.setObjectName("accentButton")
+        self._new_message_button.clicked.connect(self._open_new_message_editor)
+        button_row.addWidget(self._new_message_button)
+        button_row.addStretch(1)
+        self._info_button = QPushButton()
+        self._info_button.setToolTip("Információ")
+        self._info_button.setFixedSize(_ICON_BUTTON_SIZE, _ICON_BUTTON_SIZE)
+        self._info_button.clicked.connect(self._open_info)
+        button_row.addWidget(self._info_button)
+        self._settings_button = QPushButton()
+        self._settings_button.setToolTip("Beállítások")
+        self._settings_button.setFixedSize(_ICON_BUTTON_SIZE, _ICON_BUTTON_SIZE)
+        self._settings_button.clicked.connect(self._open_settings)
+        button_row.addWidget(self._settings_button)
+        self._close_button = QPushButton()
+        self._close_button.setToolTip("Bezárás")
+        self._close_button.setFixedSize(_ICON_BUTTON_SIZE, _ICON_BUTTON_SIZE)
+        self._close_button.clicked.connect(self.close)
+        button_row.addWidget(self._close_button)
         right_layout.addLayout(button_row)
 
         splitter.addWidget(right_panel)
@@ -139,7 +156,13 @@ class MainWindow(QMainWindow):
         self._refresh_stats(self._calendar_widget.year, self._calendar_widget.month)
 
     def _on_theme_changed(self) -> None:
-        self._calendar_widget.set_palette(self._theme_manager.palette)
+        palette = self._theme_manager.palette
+        self._calendar_widget.set_palette(palette)
+        self._message_list.set_palette(palette)
+        self._new_message_button.setIcon(make_icon("new_message", palette.accent_text))
+        self._info_button.setIcon(make_icon("info", palette.button_text))
+        self._settings_button.setIcon(make_icon("settings", palette.button_text))
+        self._close_button.setIcon(make_icon("close", palette.button_text))
 
     def _on_month_changed(self, year: int, month: int) -> None:
         self._message_list.set_month(year, month)
@@ -172,6 +195,10 @@ class MainWindow(QMainWindow):
         if dialog.exec() == MessageEditorDialog.DialogCode.Accepted:
             self._message_list.refresh()
             self._calendar_widget.refresh()
+
+    def _open_info(self) -> None:
+        dialog = InfoDialog(self)
+        dialog.exec()
 
     def _open_settings(self) -> None:
         dialog = SettingsDialog(

@@ -411,6 +411,7 @@ class DayStatusDialog(QDialog):
         layout.addWidget(clear_button)
 
         buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
+        buttons.button(QDialogButtonBox.StandardButton.Cancel).setText("Mégse")
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 

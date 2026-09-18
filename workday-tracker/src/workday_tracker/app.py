@@ -10,7 +10,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox, QSystemTrayIcon
 
 from .models import DayRecord
 from .settings import SettingsStore
@@ -80,6 +80,7 @@ def run() -> int:
     if not guard.is_primary:
         guard.notify_existing_instance()
         return 0
+    guard.start_server()
 
     try:
         calendar_store = CalendarStore(data_dir)
@@ -97,6 +98,11 @@ def run() -> int:
 
     theme_manager = ThemeManager(app)
     theme_manager.apply(settings_store.settings.theme_mode, settings_store.settings.color_scheme)
+
+    # A brief tray notification confirming the app actually started - useful
+    # since it may launch silently in the background via Windows autostart.
+    tray_icon = _show_startup_notification(icon_path)
+    app.tray_icon = tray_icon  # keep a reference alive for the app's lifetime
 
     _warn_if_corrupt(calendar_store.was_corrupt, "naptár")
     _warn_if_corrupt(message_store.was_corrupt, "üzenetek")
@@ -124,6 +130,32 @@ def _resolve_icon_path() -> Path:
     else:
         base = Path(__file__).resolve().parent.parent.parent
     return base / "assets" / "icon.ico"
+
+
+def _show_startup_notification(icon_path: Path) -> QSystemTrayIcon | None:
+    """Show a brief tray balloon confirming the app started, if possible.
+
+    Never raises - a missing/unsupported tray is a cosmetic gap, not a
+    reason to fail startup.
+    """
+    try:
+        if not QSystemTrayIcon.isSystemTrayAvailable():
+            logger.info("System tray not available; skipping startup notification.")
+            return None
+        icon = QIcon(str(icon_path)) if icon_path.exists() else QIcon()
+        tray_icon = QSystemTrayIcon(icon)
+        tray_icon.setToolTip("WorkDay Tracker")
+        tray_icon.setVisible(True)
+        tray_icon.showMessage(
+            "WorkDay Tracker",
+            "Az alkalmazás elindult.",
+            QSystemTrayIcon.MessageIcon.Information,
+            4000,
+        )
+        return tray_icon
+    except Exception as exc:  # noqa: BLE001 - cosmetic only, never fatal
+        logger.warning("Failed to show startup tray notification: %s", exc)
+        return None
 
 
 def _bring_to_front(window) -> None:

@@ -108,6 +108,8 @@ class MessageEditorDialog(QDialog):
             QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Cancel
         )
         buttons.button(QDialogButtonBox.StandardButton.Save).setObjectName("accentButton")
+        buttons.button(QDialogButtonBox.StandardButton.Save).setText("Mentés")
+        buttons.button(QDialogButtonBox.StandardButton.Cancel).setText("Mégse")
         buttons.accepted.connect(self._save)
         buttons.rejected.connect(self.reject)
         button_row.addWidget(buttons)

@@ -57,6 +57,35 @@ def test_unrecorded_workdays_counts_half_missing_half():
     assert stats.unrecorded_workdays == weekday_count - 0.5
 
 
+def test_travel_days_counts_half_office_day_as_a_full_travel_day():
+    days = {"2026-09-21": DayRecord(am=DayStatus.OFFICE, pm=DayStatus.HOME_OFFICE)}
+    stats = compute_monthly_stats(2026, 9, days)
+    assert stats.office == 0.5
+    assert stats.travel_days == 1
+
+
+def test_travel_days_counts_full_office_day_once():
+    days = {"2026-09-21": DayRecord(am=DayStatus.OFFICE, pm=DayStatus.OFFICE)}
+    stats = compute_monthly_stats(2026, 9, days)
+    assert stats.travel_days == 1
+
+
+def test_travel_days_zero_when_no_office_time():
+    days = {"2026-09-21": DayRecord(am=DayStatus.HOME_OFFICE, pm=DayStatus.HOME_OFFICE)}
+    stats = compute_monthly_stats(2026, 9, days)
+    assert stats.travel_days == 0
+
+
+def test_travel_days_sums_across_multiple_days():
+    days = {
+        "2026-09-21": DayRecord(am=DayStatus.OFFICE, pm=DayStatus.OFFICE),
+        "2026-09-22": DayRecord(am=DayStatus.OFFICE, pm=DayStatus.HOME_OFFICE),
+        "2026-09-23": DayRecord(am=DayStatus.HOME_OFFICE, pm=DayStatus.HOME_OFFICE),
+    }
+    stats = compute_monthly_stats(2026, 9, days)
+    assert stats.travel_days == 2
+
+
 def test_month_boundary_february_leap_year():
     days = days_in_month(2024, 2)
     assert len(days) == 29

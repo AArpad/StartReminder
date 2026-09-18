@@ -29,13 +29,16 @@ class StatsPanel(QGroupBox):
         super().__init__("Havi összesítés", parent)
         self.setFixedWidth(_PANEL_WIDTH)
         layout = QGridLayout(self)
+        layout.setVerticalSpacing(2)
+        layout.setHorizontalSpacing(8)
 
         self._office_label = self._add_row(layout, 0, "Irodai napok")
         self._home_office_label = self._add_row(layout, 1, "Home Office napok")
-        self._vacation_label = self._add_row(layout, 2, "Szabadság")
-        self._sick_leave_label = self._add_row(layout, 3, "Betegszabadság")
-        self._public_holiday_label = self._add_row(layout, 4, "Ünnepnap")
-        self._unrecorded_label = self._add_row(layout, 5, "Rögzítetlen munkanapok")
+        self._travel_label = self._add_row(layout, 2, "Utazási napok")
+        self._vacation_label = self._add_row(layout, 3, "Szabadság")
+        self._sick_leave_label = self._add_row(layout, 4, "Betegszabadság")
+        self._public_holiday_label = self._add_row(layout, 5, "Ünnepnap")
+        self._unrecorded_label = self._add_row(layout, 6, "Rögzítetlen munkanapok")
 
     def _add_row(self, layout: QGridLayout, row: int, title: str) -> QLabel:
         title_label = QLabel(title + ":")
@@ -51,6 +54,7 @@ class StatsPanel(QGroupBox):
     def update_stats(self, stats: MonthlyStats) -> None:
         self._office_label.setText(_format_count(stats.office))
         self._home_office_label.setText(_format_count(stats.home_office))
+        self._travel_label.setText(str(stats.travel_days))
         self._vacation_label.setText(_format_count(stats.vacation))
         self._sick_leave_label.setText(_format_count(stats.sick_leave))
         self._public_holiday_label.setText(_format_count(stats.public_holiday))
