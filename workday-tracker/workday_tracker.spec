@@ -12,6 +12,7 @@ sys.path.insert(0, str(src_path))
 
 datas = [
     (str(src_path / "workday_tracker" / "theming" / "style.qss.tmpl"), "workday_tracker/theming"),
+    (str(project_root / "assets" / "icon.ico"), "assets"),
 ]
 
 a = Analysis(

@@ -5,8 +5,10 @@ from __future__ import annotations
 import logging
 import sys
 from datetime import date
+from pathlib import Path
 
 from PySide6.QtCore import QObject, Signal
+from PySide6.QtGui import QIcon
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QApplication, QMessageBox
 
@@ -68,6 +70,12 @@ def run() -> int:
     app.setApplicationName("WorkDay Tracker")
     app.setQuitOnLastWindowClosed(True)
 
+    icon_path = _resolve_icon_path()
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
+    else:
+        logger.warning("Icon file not found: %s", icon_path)
+
     guard = SingleInstanceGuard()
     if not guard.is_primary:
         guard.notify_existing_instance()
@@ -103,6 +111,19 @@ def run() -> int:
 
     main_window.show()
     return app.exec()
+
+
+def _resolve_icon_path() -> Path:
+    """Locate assets/icon.ico both when run from source and when frozen.
+
+    PyInstaller onefile extracts bundled data files (see the .spec's `datas`)
+    under sys._MEIPASS at runtime, not next to the executable.
+    """
+    if getattr(sys, "frozen", False):
+        base = Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+    else:
+        base = Path(__file__).resolve().parent.parent.parent
+    return base / "assets" / "icon.ico"
 
 
 def _bring_to_front(window) -> None:
